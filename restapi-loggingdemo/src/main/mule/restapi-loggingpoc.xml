@@ -5,8 +5,14 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="restapi-loggingpoc-config" api="restapi-loggingpoc.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-
+	
 	<configuration-properties doc:name="Configuration properties" doc:id="273805a1-4826-4547-b368-a3bced3c4e75" file="logproperties.yaml" />
+	<import doc:name="logging" doc:id="b89d28f2-6ab3-43c4-8d33-4738d9f2cbe8" file="utils\generic-logging.xml" />
+    <import doc:name="metrics" doc:id="71f26a7a-c1b4-4448-8fdd-b1f9d4bdf4a7" file="utils\generic-custom-metrics.xml" />
+    <import doc:name="errorhandling" doc:id="ee99d378-ce07-47c8-84d3-d64429822265" file="utils\generic-error-handling.xml" />
+    <import doc:name="http" doc:id="c790ac25-9999-4f58-b570-1ecd19fd3dd5" file="utils\generic-http-request.xml" />
+    <import doc:name="notification" doc:id="cc3272bc-e7df-4b8c-99d9-f8df5a41250c" file="utils\generic-notification.xml" />  
+    <import doc:name="Import" doc:id="ba76e2b9-f10f-4e01-8d93-667845593a05" file="utils\generic-validation.xml" /> 
 	<flow name="restapi-loggingpoc-main">
         <http:listener config-ref="restapi-loggingpoc-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
