@@ -1,0 +1,11 @@
+logCategory: "generic-logging"
+applicationName: "restapi-loggingdemo"
+mule:
+  env: "DEV"
+enableNotification: "true"
+cloudHub:
+    userName: "123"
+    password: "123"
+  
+  
+  

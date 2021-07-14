@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:custom-metrics="http://www.mulesoft.org/schema/mule/custom-metrics" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/custom-metrics http://www.mulesoft.org/schema/mule/custom-metrics/current/mule-custom-metrics.xsd">
+	<flow name="generic-custom-metrics-flow" doc:id="1bd40eb3-6ebe-477c-b2fc-7456018c5aed" >
+		<logger level="INFO" doc:name="Logger" doc:id="3c29bdda-bbe2-4e8c-90d4-12520c28d21e" message="#[{
+	logpayload: vars
+}]"/>
+		<async doc:name="Async" doc:id="9415330d-5f8c-4e67-97ba-730b0d2f1c90" >
+			<custom-metrics:send doc:name="Send Custom Metric" doc:id="3428c0e3-7780-452d-8406-f51e71b360de" metricName="dealer-metric">
+				<custom-metrics:dimensions >
+					<custom-metrics:dimension dimensionName="dealer" value="#[vars.customMetricInput.dealer]" />
+				</custom-metrics:dimensions>
+				<custom-metrics:facts >
+					<custom-metrics:fact factName="count" value="1" />
+				</custom-metrics:facts>
+			</custom-metrics:send>
+		</async>
+	</flow>
+</mule>

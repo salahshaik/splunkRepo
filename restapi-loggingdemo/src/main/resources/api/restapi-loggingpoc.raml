@@ -1,0 +1,36 @@
+#%RAML 1.0
+title: RestAPI-LoggingPOC
+baseUri: http://localhost:8081
+version: 1.0
+mediaType: 
+- application/json
+
+/calculator:
+  /add:
+    get:
+      queryParameters:
+        value1: integer
+        value2: integer
+      responses:
+        200:
+          body:
+            properties:
+              result: integer
+            example:
+              result : 5
+
+  /subtract:
+    get:
+      queryParameters:
+        value1: integer
+        value2: integer
+      responses:
+        200:
+          body:
+            properties:
+              result: integer
+            example:
+              result : 2              
+
+            
+            

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="906a1f5d-1116-4737-8d23-dbecea6cf9b2" >
+		<file:connection workingDir="${app.home}" />
+	</file:config>
+	<flow name="generic-validation-flow" doc:id="09102044-1d8e-49d5-ae54-cc1a12300a53">
+		<choice doc:name="Check if Validation is Enabled or not" doc:id="030a8a06-d23e-4c88-8f58-d09968c41fb7" >
+			<when expression="#[contains(p('enableValidation'),'true')]">
+				<flow-ref doc:name="Flow Reference to generic-validation-subflow" doc:id="5b54d33c-4093-49a8-92c3-7b6f67eb1d0b" name="generic-validation-subflow" />
+			</when>
+			<otherwise >
+				<flow-ref doc:name="Flow Reference to flowName" doc:id="ed0b9090-fb48-45ca-a64e-0440c0fc0c34" name="#[vars.flowName]" />
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="generic-validation-subflow" doc:id="de8c7b2c-6676-4bee-a12f-57381c863366" >
+		<flow-ref doc:name="Flow Reference to check-for-caching-subflow to validationsheet-in-obejectstore-check-flow" doc:id="4844b953-dff3-4628-9807-5a3ae90f9f18" name="validationsheet-in-obejectstore-check-flow" />
+		<ee:transform doc:name="Validating Input Payload aganist Validation sheet" doc:id="ccb83cc7-c84a-40c5-9515-6918eeadd148">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import isNumeric from dw::core::Strings
+var keyOfInputPayload = vars.jsonInputPayload pluck ((value, key, index) -> key as String) 
+---
+(payload map {
+
+  (if(keyOfInputPayload contains  $.FieldName as String)
+   
+     (
+                if ($.ValidationType=="nullcheck") {
+             
+                    (($.FieldName):  {
+                                    ErrorCode: $.ErrorCode,  
+                                     ValidationMessage :$.ValidationMessage
+                                     }) 
+                                if (vars.jsonInputPayload[$.FieldName]=="" or vars.jsonInputPayload[$.FieldName]==null)
+                 
+                 }
+                
+                else if($.ValidationType=="sizecheck") {
+                     
+                     (($.FieldName):  {
+                                    ErrorCode: $.ErrorCode,  
+                                    ValidationMessage : $.ValidationMessage
+                                    }) 
+                    
+                    if(vars.jsonInputPayload[$.FieldName] !=null and (sizeOf(vars.jsonInputPayload[$.FieldName]) < $.ValidationCondition as Number))
+                }
+                
+                else if ($.ValidationType=="patterncheck") {
+     
+            		(($.FieldName):  {
+                            ErrorCode: $.ErrorCode,  
+                             ValidationMessage :$.ValidationMessage
+                             }) 
+                    if (vars.jsonInputPayload[$.FieldName] !=null and !isBlank(vars.jsonInputPayload[$.FieldName]) and !(vars.jsonInputPayload[$.FieldName] as String matches $.ValidationCondition ))
+         
+         		}                     
+                          
+                else if ($.ValidationType=="numericheck") {
+                        
+                        (($.FieldName): {
+                                ErrorCode: $.ErrorCode,
+                                ValidationMessage: $.ValidationMessage
+                        })
+                        if (!isBlank(vars.jsonInputPayload[$.FieldName]) and vars.jsonInputPayload[$.FieldName] !=null and !(isNumeric(vars.jsonInputPayload[$.FieldName])))
+                }
+
+                else if ($.ValidationType=="rangecheck") {
+                        
+                        (($.FieldName): {
+                                ErrorCode: $.ErrorCode,
+                                ValidationMessage: $.ValidationMessage
+                        })
+                        if (!isBlank(vars.jsonInputPayload[$.FieldName]) and vars.jsonInputPayload[$.FieldName] !=null and isNumeric(vars.jsonInputPayload[$.FieldName])
+                        	and((vars.jsonInputPayload[$.FieldName] as Number < 0) or (vars.jsonInputPayload[$.FieldName] as Number > 10000000000))
+                        )
+                }
+        
+     else {})
+
+   else {})
+   
+   }) filter $!= {}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables />
+		</ee:transform>
+		<choice doc:name="Checking Error" doc:id="f5df8c4b-8961-4342-a2c0-e2ca3815b367">
+			<when expression='#[payload[0]..ErrorCode[0] == "400" or sizeOf(payload)&gt;0]'>
+				<flow-ref doc:name="Flow Reference to flowName for Invalid Request" doc:id="0d4eb09b-e93b-4b6f-b431-21426162a435" name="#[vars.invalidRequestFlow]" />
+			</when>
+			<otherwise>
+				<flow-ref doc:name="Flow Reference to flowName" doc:id="03999a41-b2ef-4095-9a2d-dcc01ebd619a" name="#[vars.flowName]" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="validationsheet-in-obejectstore-check-flow" doc:id="6171bc2c-958d-4c96-b25d-3ebc940485cd">
+		<os:retrieve doc:id="b3087ed4-74c2-4785-b799-147d19c47b54" key="#[vars.customValidation.fileName]" objectStore="Rates_Object_store" target="keyValue" doc:name="Check If Key Exist">
+			<os:default-value><![CDATA[#[" "]]]></os:default-value>
+		</os:retrieve>
+		<choice doc:name="Check Validation Sheet in Object Store" doc:id="021e908e-5c1f-4a00-92b8-25e2638bfe5e">
+			<when expression='#[vars.keyValue==" "]'>
+				<file:read doc:name="Reading Validation CSV file" doc:id="503c79a4-1ad4-4acb-902f-38c0ca4a16fb" config-ref="File_Config" path="#['${app.home}$(vars.customValidation.filePath)']" />
+				<async doc:name="Async" doc:id="a64d7a0e-7258-4597-a519-f334b61090c4">
+					<os:store doc:id="4d985bae-6b6c-48be-9dc0-00c2c6507ba4" key="#[vars.customValidation.fileName]" objectStore="Rates_Object_store" doc:name="Store" />
+				</async>
+			</when>
+			<otherwise>
+				<os:retrieve doc:id="c2ff1d91-79d7-4319-8193-97d2c6a947cb" key="#[vars.customValidation.fileName]" objectStore="Rates_Object_store" doc:name="Retrieve Payload" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+
+</mule>

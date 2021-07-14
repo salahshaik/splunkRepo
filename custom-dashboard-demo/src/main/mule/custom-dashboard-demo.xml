@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:custom-metrics="http://www.mulesoft.org/schema/mule/custom-metrics"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/custom-metrics http://www.mulesoft.org/schema/mule/custom-metrics/current/mule-custom-metrics.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="607480b1-234a-44c9-be73-30ac761d60eb" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<import doc:name="Import" doc:id="73c4d190-a3e8-4e19-8bf7-4fbf4d64a6b7" file="generic-custom-metrics.xml" />
+	<flow name="custom-dashboard-demoFlow" doc:id="66eb818f-522f-48fd-92f3-f9920e532327" >
+		<http:listener doc:name="Listener" doc:id="f510c2d7-e05f-472c-a389-08c339b11ec3" config-ref="HTTP_Listener_config" path="/dashboard"/>
+		<set-variable value="#[output application/json
+---
+{
+	dealer: payload.dealer
+}]" doc:name="Set Variable" doc:id="2cd7d40b-7ee4-4a5b-afe4-a3bcfc48bfb2" variableName="customMetricInput"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d49030d5-7513-46de-9085-3e539fa3113b" message="#[{
+	logvar: vars.customMetricInput.dealer
+}]"/>
+		<flow-ref doc:name="Flow Reference-to-generic-custom-metrics-flow" doc:id="6429de84-d622-433d-8964-5ba8934e415f" name="generic-custom-metrics-flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="9f734446-dc69-4a9d-822d-e92f54847cc5" message='#["Sent to Dashboard"]'/>
+	</flow>
+</mule>

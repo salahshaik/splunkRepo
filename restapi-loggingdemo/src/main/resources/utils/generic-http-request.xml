@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3d5674cc-6cd3-481d-9c92-c20fbe246d1c" >
+		<http:request-connection host="#[vars.'httpService.host']" port="#[vars.'httpService.port']"/>
+	</http:request-config>
+	<flow name="generic-rest-api-call-flow" doc:id="ccc060ed-9008-4cf5-bf77-5a7bc94d4690" >
+		<http:request method="#[vars.'httpService.method']" doc:name="Request to REST API" doc:id="c4851a7b-6cbb-474c-9b7b-07218896e1e0" path="#[vars.'httpService.path']" config-ref="HTTP_Request_configuration">
+			<http:body ><![CDATA[#[vars.httpService.body default {}]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	("correlationId" : vars.correlationId) if (vars.correlationId != null),
+	("client_secret" : vars.httpService.clientSecret) if (vars.httpService.clientSecret != null),
+	("client_id" : vars.httpService.clientId) if (vars.httpService.clientId != null)
+}]]]></http:headers>
+			<http:uri-params ><![CDATA[#[vars.httpService.uriParams default {}]]]></http:uri-params>
+			<http:query-params ><![CDATA[#[vars.httpService.queryParams default {}]]]></http:query-params>
+		</http:request>
+	</flow>
+</mule>
