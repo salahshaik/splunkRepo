@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<error-handler name="generic-global-error-handler-REST">
+		<on-error-continue
+			enableNotifications="true"
+			logException="true"
+			type="APIKIT:BAD_REQUEST">
+			<ee:transform
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="f3f953b1-69de-401b-a36e-c26c26979532"
+				doc:name="Setting httpStatus">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue type="APIKIT:NOT_FOUND">
+			<ee:transform
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="9f26a7a9-6d18-4f5f-9240-f0e9d4edf0a8"
+				doc:name="Setting httpStatus">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="2c4e329a-a75a-40fe-a104-0a112940a0ec"
+				doc:name="Setting httpStatus">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="e9acf80c-6e90-4c25-9e4c-6e4f9f1d16c4"
+				doc:name="Setting httpStatus">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue
+			type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="ee3592e6-9fd3-4d44-8354-8b3afd46db4e"
+				doc:name="Setting httpStatus">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue type="APIKIT:NOT_IMPLEMENTED">
+			<ee:transform
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:id="955cfd1e-ae03-492d-8fd5-a4436f3ccd1f"
+				doc:name="Setting httpStatus">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Continue"
+			doc:id="e008c9dd-5627-4d57-9b3c-e8a78421c4a4"
+			when='#[(error.errorType.identifier == "RETRY_EXHAUSTED")  or  (error.errorType.namespace == "HTTP")]'>
+			<choice
+				doc:name="Error Type Check"
+				doc:id="fc7c9d32-a54e-41f7-a8db-40933eccf110">
+				<when
+					expression='#[error.errorType.identifier=="GATEWAY_TIMEOUT"]'>
+					<ee:transform
+						doc:name="Setting HTTP Status and Error Desc"
+						doc:id="8dbc687b-d275-4d20-af6d-0c151e0a062a">
+						<ee:message>
+						</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+							<ee:set-variable variableName="errorDescription"><![CDATA[%dw 2.0
+output application/java
+---
+responseDescription: "Downstream system is down"]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</when>
+				<otherwise>
+					<ee:transform
+						doc:name="Setting HTTP Status and Error Desc"
+						doc:id="48a60919-a378-4839-b43c-15e685c4e44f">
+						<ee:message>
+						</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="httpStatus"><![CDATA[error.errorMessage.payload.statusCode default 500]]></ee:set-variable>
+							<ee:set-variable variableName="errorDescription"><![CDATA[%dw 2.0
+output application/java
+---
+error.errorMessage.payload]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</otherwise>
+			</choice>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="60189962-05d7-48d6-ab6c-9e5f11e4172f"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+		<on-error-continue
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Continue"
+			doc:id="62205cd4-a2ec-46eb-959f-6cac82b85b9a"
+			type="ANY">
+			<ee:transform
+				doc:name="Setting Http Status"
+				doc:id="bc67045d-3faa-47a4-ac32-1b79d5295094">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
+output application/json
+
+var status = if(error.errorType.identifier == "UNAUTHORIZED") '401' else '500'
+---
+status
+   ]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-REST"
+				doc:id="d8b843b5-836d-49b5-a200-f743051be7c2"
+				name="common-error-sub-flow-REST" />
+		</on-error-continue>
+	</error-handler>
+	<error-handler
+		doc:id="2cc4a68c-f1a0-4422-97e7-bc0d23c8b3ec"
+		name="generic-global-error-handler-SOAP">
+		<on-error-continue
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Continue"
+			doc:id="040ad757-f114-4bdb-ae66-2ee0b03f947d"
+			when='#[(error.errorType.identifier == "RETRY_EXHAUSTED")  or  (error.errorType.namespace == "HTTP")  ]'>
+			<ee:transform
+				doc:name="Setting Fault Code and Fault String"
+				doc:id="afd89593-0772-4836-b3a6-dac27146ae21">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="faultCode"><![CDATA["Receiver"
+				]]></ee:set-variable>
+					<ee:set-variable variableName="faultString"><![CDATA[%dw 2.0
+output application/java
+---
+"Downstream system down"]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-SOAP"
+				doc:id="86c6039b-fdcb-425c-a4a2-c42ff78bd858"
+				name="common-error-sub-flow-SOAP" />
+		</on-error-continue>
+		<on-error-continue
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Continue"
+			doc:id="e4167366-b011-4421-bc85-32752090425f"
+			type="ANY">
+			<ee:transform
+				doc:name="Setting Fault Code and Fault string"
+				doc:id="caf2670e-dfeb-4416-977f-fa4f72f66c3b">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="faultCode"><![CDATA[ "Receiver"
+				]]></ee:set-variable>
+					<ee:set-variable variableName="faultString"><![CDATA[%dw 2.0
+output application/java
+
+var errorString = if(error.errorType.identifier == "UNAUTHORIZED")
+   "User Authentication failed or Downstream system down" 
+   else "Unknown error"
+
+---
+errorString]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref
+				doc:name="Flow Reference to common-error-sub-flow-SOAP"
+				doc:id="5244ebf6-2e90-4c01-ac3e-1f97133d5728"
+				name="common-error-sub-flow-SOAP" />
+		</on-error-continue>
+	</error-handler>
+	<sub-flow
+		name="common-error-sub-flow-REST"
+		doc:id="8a00e98d-c32f-495e-89d7-fcebdf54bbfb">
+		<flow-ref
+			doc:name="Flow Reference to common-error-logger"
+			doc:id="4638fc99-13ab-46af-8d52-6a342b9ac842"
+			name="common-error-logger" />
+		<ee:transform
+			doc:name="Error Payload"
+			doc:id="15c7a2ef-dd9a-41b8-9251-7454d17b074b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var responseDescription=  if (vars.errorDescription.responseDescription?)  vars.errorDescription.responseDescription 
+                          else  error.description default ""
+---
+{
+    "status":  "FAILED",
+    "statusCode": vars.httpStatus,
+    "responseDescription": responseDescription
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to generic-notification-flow" doc:id="515c1925-54c2-4737-b46c-bf8115a90ff2" name="generic-notification-flow" />
+	</sub-flow>
+	<sub-flow
+		name="common-error-sub-flow-SOAP"
+		doc:id="69607860-6100-4b9d-9a1c-91357a4e9ffd">
+		<flow-ref
+			doc:name="Flow Reference to common-error-logger"
+			doc:id="d57ca7f1-588a-43c7-bccb-058ba56bb59e"
+			name="common-error-logger" />
+		<ee:transform
+			doc:name="Error Payload"
+			doc:id="31b6b43f-bd73-45bf-bf82-e1b33b3a4c74">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://schemas.xmlsoap.org/soap/envelope/
+---
+{
+	ns0#Envelope: {
+		ns0#Body: {
+			ns0#Fault: {
+				faultcode: vars.faultCode,
+				faultstring: vars.faultString
+			}
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref
+			doc:name="Flow Reference to generic-notification-flow"
+			doc:id="e9d21169-11e5-42d3-85c1-d9ed8375f1e0"
+			name="generic-notification-flow" />
+	</sub-flow>
+</mule>

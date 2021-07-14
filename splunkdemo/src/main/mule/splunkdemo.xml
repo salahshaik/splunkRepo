@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f1c7ea66-d5e9-400c-bc0c-8e9d42886ef0" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<import file="common-utils\generic-logging.xml" />
+	<import file="common-utils\generic-http-request.xml" />
+	<import file="common-utils\generic-error-handling.xml" />
+	<import file="common-utils\generic-notification.xml" />
+	
+	<configuration-properties doc:name="Configuration properties" doc:id="f248cd79-a81a-4918-a351-5bb8ef9e3577" file="logproperties.yaml" />
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="b73d4a79-5615-46e2-a53b-90c10b620b59" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<cloudhub:config name="CloudHub_Config" doc:name="CloudHub Config" doc:id="2dce5b09-fcd8-4e78-ad94-0034a1b25e10" >
+		<cloudhub:connection username="salah_772021" password="Buntu@123"/>
+	</cloudhub:config>
+	<flow name="splunkdemoFlow" doc:id="5c2f99c9-549a-4591-a92b-49bc7a5ada70" >
+		<http:listener doc:name="Listener" doc:id="66d3c459-72b3-44b1-888b-4acc8236a631" config-ref="HTTP_Listener_config" path="/splunkdemo"/>
+		<ee:transform doc:name="setVariables" doc:id="5d06e023-70e7-4c68-89a1-990da4714d56" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="correlationId" ><![CDATA[%dw 2.0
+output application/json
+---
+uuid()]]></ee:set-variable>
+				<ee:set-variable variableName="requestPath" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.requestPath]]></ee:set-variable>
+				<ee:set-variable variableName="flowName" ><![CDATA[%dw 2.0
+output application/java
+---
+'']]></ee:set-variable>
+				<ee:set-variable variableName="queryParams" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams]]></ee:set-variable>
+				<ee:set-variable variableName="uriParams" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.uriParams]]></ee:set-variable>
+				<ee:set-variable variableName="originalPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload ]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.host" ><![CDATA[%dw 2.0
+output application/java
+---
+"localhost"]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.port" ><![CDATA[%dw 2.0
+output application/java
+---
+"8082"]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.path" ><![CDATA[%dw 2.0
+output application/java
+---
+"/accounts/login"]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.method" ><![CDATA[%dw 2.0
+output application/java
+---
+"GET"]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.queryParams" ><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.uriParams" ><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.body" ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.clientId" ><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="httpService.clientSecret" ><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference-to-common-start-logger" doc:id="475cd0bb-8a46-434d-960e-dfc22348a571" name="common-start-logger"/>
+		<flow-ref doc:name="Flow Reference-to-generic-rest-api-call-flow" doc:id="a5ffd66d-f065-45e4-bc8a-8efe6af8e955" name="generic-rest-api-call-flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="d8d44edc-533b-4cf6-b618-7ed063b43da4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference-to-common-end-logger" doc:id="48fe5e2e-e6c0-411a-b338-242d92a24e9a" name="common-end-logger"/>
+		<error-handler ref="generic-global-error-handler-REST-LOCAL" />
+		
+		
+		
+	</flow>
+	<flow name="splunkdemoFlow1" doc:id="aef9c6a7-025b-4fda-a801-a83821d18fda" >
+		<http:listener doc:name="Listener" doc:id="59cbd9f0-0001-46df-b58f-44a06fc59325" config-ref="HTTP_Listener_config1" path="/accounts/login"/>
+		<ee:transform doc:name="Transform Message" doc:id="99a9f015-4e5b-4918-be85-5fedbcb69a25" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "access_token": "fe43dbce-5b3e-4a1a-8441-602d693d6e37",
+    "token_type": "bearer",
+    "redirectUrl": "/home/"
+} + {createdDate: now()}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

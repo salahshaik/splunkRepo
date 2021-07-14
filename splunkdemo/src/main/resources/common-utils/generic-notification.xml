@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd">
+	<sub-flow name="generic-notification-flow" doc:id="54d8bae2-ea52-4454-a345-ae2999891338" >
+		<choice doc:name="Check if Notification is Enabled or Not" doc:id="9bb84b6c-29d4-4d17-8940-4bfcee18f187" >
+			<when expression="#[contains(p('enableNotification'),'true')]" >
+				<cloudhub:create-notification domain="${applicationName}" doc:name="Create Notification" doc:id="59c97b29-9961-47e2-87fd-0b25da4ac833" config-ref="CloudHub_Config" priority="ERROR" transactionId="#[vars.correlationId]" >
+					<cloudhub:message ><![CDATA[#["Error: $(write(vars.errorLogBody, "application/json"))"]]]></cloudhub:message>
+				</cloudhub:create-notification>
+			</when>
+		</choice>
+	</sub-flow>
+</mule>

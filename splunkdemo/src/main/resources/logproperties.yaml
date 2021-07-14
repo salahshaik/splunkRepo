@@ -1,0 +1,9 @@
+logCategory: "generic-logging"
+applicationName: "splunkdemo"
+mule:
+  env: "DEV"
+enableNotification: "true"
+
+  
+  
+  
