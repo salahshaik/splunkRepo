@@ -5,8 +5,14 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="restapi-loggingpoc-config" api="restapi-loggingpoc.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-
+	
 	<configuration-properties doc:name="Configuration properties" doc:id="273805a1-4826-4547-b368-a3bced3c4e75" file="logproperties.yaml" />
+	<import doc:name="logging" doc:id="b89d28f2-6ab3-43c4-8d33-4738d9f2cbe8" file="utils\generic-logging.xml" />
+    <import doc:name="metrics" doc:id="71f26a7a-c1b4-4448-8fdd-b1f9d4bdf4a7" file="utils\generic-custom-metrics.xml" />
+    <import doc:name="errorhandling" doc:id="ee99d378-ce07-47c8-84d3-d64429822265" file="utils\generic-error-handling.xml" />
+    <import doc:name="http" doc:id="c790ac25-9999-4f58-b570-1ecd19fd3dd5" file="utils\generic-http-request.xml" />
+    <import doc:name="notification" doc:id="cc3272bc-e7df-4b8c-99d9-f8df5a41250c" file="utils\generic-notification.xml" />  
+    <import doc:name="Import" doc:id="ba76e2b9-f10f-4e01-8d93-667845593a05" file="utils\generic-validation.xml" /> 
 	<flow name="restapi-loggingpoc-main">
         <http:listener config-ref="restapi-loggingpoc-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -46,46 +52,30 @@ attributes.uriParams]]></ee:set-variable>
 output application/json
 ---
 payload ]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.host" ><![CDATA[%dw 2.0
+				
+				<ee:set-variable variableName="customMetricInput" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	dealer: attributes.queryParams.value1 default 0
+	
+}]]></ee:set-variable>
+				<ee:set-variable variableName="httpService" ><![CDATA[%dw 2.0
 output application/java
 ---
-"localhost"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.port" ><![CDATA[%dw 2.0
-output application/java
----
-"8082"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.path" ><![CDATA[%dw 2.0
-output application/java
----
-"/"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.method" ><![CDATA[%dw 2.0
-output application/java
----
-"GET"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.queryParams" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.uriParams" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.body" ><![CDATA[%dw 2.0
-output application/java
----
-payload]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.clientId" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.clientSecret" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="customMetricInput.dealer" ><![CDATA[%dw 2.0
-output application/java
----
-attributes.queryParams.value1 default 0]]></ee:set-variable>
+{
+	host: "localhost",
+	port: "8082",
+	path: '/',
+	method: "GET",
+	queryParams: "",
+	uriParams: "",
+	clientId: "",
+	clientSecret: "",
+	body: payload
+
+	
+}]]></ee:set-variable>
 			</ee:variables>
 
 		</ee:transform>
