@@ -52,40 +52,9 @@ attributes.uriParams]]></ee:set-variable>
 output application/json
 ---
 payload ]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.host" ><![CDATA[%dw 2.0
-output application/java
----
-"localhost"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.port" ><![CDATA[%dw 2.0
-output application/java
----
-"8082"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.path" ><![CDATA[%dw 2.0
-output application/java
----
-"/"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.method" ><![CDATA[%dw 2.0
-output application/java
----
-"GET"]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.queryParams" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.uriParams" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.body" ><![CDATA[%dw 2.0
-output application/java
----
-payload]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.clientId" ><![CDATA[%dw 2.0
-output application/java
----
-""]]></ee:set-variable>
-				<ee:set-variable variableName="httpService.clientSecret" ><![CDATA[%dw 2.0
-output application/java
+				
+				<ee:set-variable variableName="customMetricInput" ><![CDATA[%dw 2.0
+output application/json
 ---
 {
 	dealer: attributes.queryParams.value1 default 0
